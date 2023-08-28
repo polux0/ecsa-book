@@ -70,7 +70,7 @@ module.exports = {
             patterns: [
               { from: path.resolve(__dirname, 'src/imgs'), to: 'imgs' },
               { from: path.resolve(__dirname, 'src/orbs'), to: 'orbs' },
-              { from: path.resolve(__dirname, 'src/audiobook'), to: 'audiobook' },
+              // { from: path.resolve(__dirname, 'src/audiobook'), to: 'audiobook' },
               { from: path.resolve(__dirname, 'src/book/imgs'), to: 'book/imgs' },
               { from: path.resolve(__dirname, 'src/glossary.json'), to: 'glossary.json' },
                // add this line
