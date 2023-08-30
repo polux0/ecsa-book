@@ -246,6 +246,80 @@
     margin-left: auto;
     margin-right: auto;
 }
+    #priceTierOverlay{
+        position: absolute;
+        width: 30vw;
+        max-width: 60ch;
+        height: 30vw;
+        overflow-y: scroll;
+        background-color: var(--bg);
+        z-index: 6;
+        margin: 0 auto;
+        margin-top: 10vh;
+        padding: 3vw;
+        border: 1px solid var(--c1);
+        font-size: var(--bookFontSize);
+        font-family: var(--bookFontFamily);
+        box-shadow: 0px 0px 12px rgba(0,0,0,0.75);
+        border-radius: 2px;
+        line-height: 1.25em;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    /* Media query for mobile adjustments */
+    @media (max-width: 480px) {
+        #priceTierOverlay {
+            /* Example adjustments for mobile, adjust as necessary */
+            width: 60vw;
+            height: 70vw;
+            max-width: 100%;
+            padding: 2vw;
+            margin-top: 5vh;
+            font-size: var(--mobileBookFontSize); /* Assuming you have a variable for mobile font size */
+            /* Add any other modifications for mobile here */
+        }
+    }
+    #tiersSubmitButton{
+        border: 1px solid var(--c2);
+        padding: 0.3em 0.8em 0.5em 0.8em;
+    }
+    #congratzOverlay{
+        position: absolute;
+        width: 30vw;
+        max-width: 60ch;
+        height: 30vw;
+        overflow-y: scroll;
+        background-color: var(--bg);
+        z-index: 6;
+        margin: 0 auto;
+        margin-top: 10vh;
+        padding: 3vw;
+        border: 1px solid var(--c1);
+        font-size: var(--bookFontSize);
+        font-family: var(--bookFontFamily);
+        box-shadow: 0px 0px 12px rgba(0,0,0,0.75);
+        border-radius: 2px;
+        line-height: 1.25em;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    /* Media query for mobile adjustments */
+    @media (max-width: 480px) {
+        #congratzOverlay {
+            /* Example adjustments for mobile, adjust as necessary */
+            width: 60vw;
+            height: 70vw;
+            max-width: 100%;
+            padding: 2vw;
+            margin-top: 5vh;
+            font-size: var(--mobileBookFontSize); /* Assuming you have a variable for mobile font size */
+            /* Add any other modifications for mobile here */
+        }
+    }
 
     nav {
         display: grid;
@@ -780,4 +854,11 @@
     background-color: var(--bg);
     color: var(--c4);
 }
+.buttonload {
+    background-color: #000000; /* Green background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 12px 16px; /* Some padding */
+    font-size: 16px /* Set a font size */
+  }
 

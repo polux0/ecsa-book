@@ -1,3 +1,5 @@
+import { submitSelection } from "./tierSubmitSelection";
+
 document.addEventListener("DOMContentLoaded", function () {
     let aboutButton = document.getElementById("aboutButton");
     let aboutOverlay = document.getElementById("aboutOverlay");
@@ -5,6 +7,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let bookIndex = document.getElementById("bookIndex");
     let bookContent = document.getElementById("bookContent");
     let footNotesAndAudiobook = document.getElementById("footNotesAndAudiobook");
+    let priceTierOverlay = document.getElementById("priceTierOverlay");
+    let priceTierOverlayClose = document.getElementById("priceTierOverlayClose");
+    let priceTierContent = document.getElementById("priceTierContent");
+    let tiersSubmitButton = document.getElementById('tiersSubmitButton');
+    let congratzOverlay = document.getElementById('congratzOverlay');
+    let congratzOverlayClose = document.getElementById('congratzOverlayClose');
+    let congratzOverlayContent = document.getElementById('congratzOverlayContent');
 
     aboutButton.addEventListener("click", function () {
         aboutOverlay.style.display = "block";
@@ -36,6 +45,18 @@ document.addEventListener("DOMContentLoaded", function () {
         bookContent.classList.add('blur-background');
         footNotesAndAudiobook.classList.add('blur-background'); 
 
+        // web3 related
+        priceTierOverlayClose.addEventListener("click", function () {
+            priceTierOverlay.style.display = "none";
+            priceTierOverlayClose.style.display = "none";
+            priceTierContent.style.display = "none";
+        })
+        // congratz closed
+        congratzOverlayClose.addEventListener("click", function () {
+            congratzOverlay.style.display = "none";
+            congratzOverlayClose.style.display = "none";
+            congratzOverlayContent.style.display = "none";
+        })
 });
 
 

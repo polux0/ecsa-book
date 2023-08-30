@@ -1,5 +1,7 @@
 import {mint} from './mint.js';
-import { getAlreadyMintedTokenIds } from './web3/getAlreadyMintedTokens.js';
+import { isTokenMinted } from './web3/getMintedTokens.js'
+import { getMintedTokens } from './web3/getMintedTokens.js';
+
 //Get the root style to access css variables
 let root  = document.documentElement;
 
@@ -143,16 +145,31 @@ let options = {
 
  // Ensure all units are the same size and occupy the full viewport.
  let singleUnits = document.querySelectorAll('.unit');
+ // was before
+//  let observerUnits = new IntersectionObserver(function(entries) {
+//      entries.forEach(function(entry) {
+//          if (entry.isIntersecting) {
+//              // Update URL to reflect current unit.
+//              let id = entry.target.id;
+//              history.pushState({}, '', '#' + id);
+//          }
+//      });
+//  }, {threshold: 0.5});  // Adjust threshold as needed.
 
- let observerUnits = new IntersectionObserver(function(entries) {
-     entries.forEach(function(entry) {
-         if (entry.isIntersecting) {
-             // Update URL to reflect current unit.
-             let id = entry.target.id;
-             history.pushState({}, '', '#' + id);
-         }
-     });
- }, {threshold: 0.5});  // Adjust threshold as needed.
+// modified, so we preserve queryParameter like invitation & reservation
+let observerUnits = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+          let id = entry.target.id;
+
+          let queryString = window.location.search;
+          // Update URL with preserved query parameters and new hash.
+          history.pushState({}, '', queryString + '#' + id);
+      }
+  });
+}, { threshold: 0.5 });
+
+
 
  // Watch all units.
  singleUnits.forEach(function(unit) {
@@ -395,7 +412,7 @@ let unitID = 602;
 // Load the JSON file
 fetch('glossary.json')
   .then(response => response.json())
-  .then(data => {
+  .then(async data => {
     // Convert the glossary array to an object
     const glossary = data.glossary;
 
@@ -404,6 +421,11 @@ fetch('glossary.json')
 
     // Get the parent element where the terms should be added
     const glossaryContainer = document.getElementById('bookGlossary');
+
+    // Here not to flood alchemy provider
+
+    const mintedTokens = await getMintedTokens();
+    console.log('minted tokens: ', mintedTokens);
 
     glossary.forEach(item => {
       const termContainer = document.createElement('details');
@@ -447,39 +469,28 @@ fetch('glossary.json')
       units[p].prepend(unitsNFTLinks[p]);
 
       unitsPublishButtons[p] = document.createElement('button');
-      unitsPublishButtons[p].classList.add('unitPublishButton');
+      const bool = await isTokenMinted(p+1, mintedTokens);
+      if(!bool){
+        unitsPublishButtons[p].classList.add('unitPublishButton');
+      }
       unitsPublishButtons[p].style.display = 'none';
       // was before
       // unitsPublishButtons[p].id = `publishUnit${p}`;
       // Aleksa added
-      unitsPublishButtons[p].id = `publishUnit${p+1}`;
-      unitsPublishButtons[p].innerHTML = `publish unit #${p+1}`;
-      unitsPublishButtons[p].addEventListener('click', async function(event) {
-        try {
-            console.log('at least this happened');
-            await mint(p+1);
-        } catch (error) {
-          // if (error instanceof RPCError) {
-          //     switch (error.code) {
-          //         case RPCErrorCode.MagicLinkFailedVerification:
-          //         case RPCErrorCode.MagicLinkExpired:
-          //         case RPCErrorCode.MagicLinkRateLimited:
-          //         case RPCErrorCode.UserAlreadyLoggedIn:
-          //         case RPCErrorCode.InternalError:
-          //             console.log('Internal error, not runtime one');
-          //             break;
-          //         case RPCErrorCode.UserDeniedAccess:
-          //             console.log('User denied account access');
-          //             break;
-          //         default:
-          //             console.log('Unhandled RPC error:', error.code, error.message);
-          //             break;
-          //     }
-          // } else {
-              console.log("Trying to handle errors with magic:", error);
-          // }
-      }});
-
+      unitsPublishButtons[p].id = `publishUnit${p+1}`; 
+        if(!bool){
+          unitsPublishButtons[p].innerHTML = `publish unit #${p+1}`;
+          unitsPublishButtons[p].addEventListener('click', async function(event) {
+              try {
+                document.getElementById('priceTierOverlay').style.display = 'block';
+                document.getElementById('priceTierOverlayClose').style.display = 'block';
+                document.getElementById('priceTierContent').style.display = 'block';
+                localStorage.setItem('tokenId', `${p+1}`);
+              } catch (error) {
+                    console.log("Trying to handle errors with magic:", error);
+              }
+          });
+      }
       if (units[p].classList.contains('available')){
         units[p].append(unitsPublishButtons[p]);
       }
@@ -507,7 +518,7 @@ bookOrbsButton.onclick = function(){
     econMedia = true;
     activateNFTs();
   }
-  getAlreadyMintedTokenIds();
+  // getAlreadyMintedTokenIds();
 }
 
 const activateNFTs = function(){

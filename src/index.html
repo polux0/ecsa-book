@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;1,400&family=Crimson+Text:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:ital,wght@0,300;0,600;1,300&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>ECSA | Protocols for Postcapitalist Expression</title>
 </head>
 
@@ -42,6 +43,57 @@
             </ul>
         </div>
     </div><!---end aboutOverlay -->
+    <!-- Aleksa added for messages ( choose tier, congratz, you become ecounaut! ) -->
+    <div id="priceTierOverlay" style="display:none">
+        <button id="priceTierOverlayClose" style="display:none">X</button>
+        <div id="priceTierContent" style="display:none; text-align: center;">
+            <!-- Price Tiers Selection -->
+            <form id="priceTiers" style="margin-top:2rem">
+                <label>
+                    <input type="radio" name="tier" value="tier1">
+                    Tier 1 - $10
+                </label>
+                <br>
+                <br>
+                <label>
+                    <input type="radio" name="tier" value="tier2">
+                    Tier 2 - $20
+                </label>
+            </form>
+            <br>
+            <li id="tiersErrorMessage" style="display: none; margin-top:20px">
+                Error message!
+            </li>
+        </div>
+        <div style="text-align:center;margin-top:70px">
+            <button id="tiersSubmitButton" onclick="submitSelection()">Mint</button>
+        </div>
+    </div>
+    <div id="congratzOverlay" style="display:none">
+        <button id="congratzOverlayClose" style="display:none">X</button>
+        <div id="congratzOverlayContent" style="display:none; text-align: center;">
+            <!-- Price Tiers Selection -->
+            <br>
+            <li id="congratzMessage" style="display: none; margin-top:20px">
+                Congrats, you've become an Econaut!
+            </li>
+            <li id="congratzInvitationText" style="display: block; margin-top:20px">
+                If you'd like to engange more econauts in the discourse:
+            </li>
+            <li id="congratzInvitation1" style="display: block; margin-top:20px">
+                Congrats, you've become Econaut!
+            </li>
+            <li id="congratzInvitation2" style="display: block; margin-top:20px">
+                Congrats, you've become Econaut!
+            </li>
+            <li id="congratzInvitation3" style="display: block; margin-top:20px">
+                Congrats, you've become Econaut!
+            </li>
+        </div>
+        <div style="text-align:center;margin-top:70px">
+        </div>
+    </div>
+    <!---end priceTierOverlay -->
     <nav id="mainNav">
         <button class="mainNavButton" data-target="navECSA"><span>ECSA</span></button>
         <button class="mainNavButton" data-target="navBook"><span>Book</span></button>
@@ -7184,6 +7236,7 @@
         orbsAs[o] = document.createElement('a');
         orbsAs[o].id = "orb_" + o; 
         orbsAs[o].classList.add('orbMapA');
+        // we need to modify things here as we have to preserve invitation or reservation url
         orbsAs[o].href = `#u${o}`;
         orbsImgs[o] = document.createElement('img');
         orbsImgs[o].classList.add('orbMapImg');
@@ -7197,3 +7250,4 @@
     }
 </script>
 <script src="./bundle.js"></script>
+<script src="./tierSubmitSelection.js"></script>

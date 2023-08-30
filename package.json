@@ -5,8 +5,8 @@
   "main": "magic.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --mode production && webpack serve --open",
-    "build": "webpack --mode production"
+    "start": "webpack serve --open",
+    "build": "webpack --env production --env VERCEL_ENV=$VERCEL_ENV"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +26,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
+    "dotenv-webpack": "^8.0.1",
     "ethers": "^6.7.1",
     "magic-sdk": "^19.3.1",
     "web3": "^4.1.1"

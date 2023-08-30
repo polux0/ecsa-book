@@ -1,5 +1,3 @@
-import { getMagicInstance } from './magic.js';
-import { Web3 } from 'web3';
 import { ethers } from 'ethers';
 async function mint(tokenId){
 
@@ -793,7 +791,6 @@ const connectWallet = async () => {
     console.log("error: ", error);
   }
 };
-
 await connectWallet();
 
 const mint1 = async (tokenId) => {
@@ -825,10 +822,16 @@ const mint1 = async (tokenId) => {
       const buttons = document.querySelectorAll(`#publishUnit${tokenId}`);
       buttons.forEach(function(button) {
           // Apply changes to each element
-          button.style.backgroundColor = "red"; // this will change the background color to red for both divs
-          button.classList.add('button-loading');
+          if(button) {
+            // Modify the button's attributes
+            button.className = 'buttonload';  // Change class
+            // Modify the button's content
+            button.innerHTML = '<i class="fa fa-circle-o-notch fa-spin"></i>Loading';
+            applyStyles(button);
+        } else {
+            console.warn(`Button with ID ${button} not found.`);
+        }
       });
-      console.log('buttons: ', buttons);
       const transaction = await testNFTContract.mintBaseTest(tokenId, {gasLimit: 12000000});
       const receipt = await transaction.wait();
       if (receipt && receipt.status == 1) {
@@ -852,6 +855,19 @@ const mint1 = async (tokenId) => {
       } else if (error.message.includes("insufficient funds")) {
           console.log('You do not have enough funds. Consider switching to a network with enough balance.');
       } else {
+          const buttons = document.querySelectorAll(`#publishUnit${tokenId}`);
+          buttons.forEach(function(button) {
+            // Apply changes to each element
+            if(button) {
+              button.innerHTML = `Publish unit #${tokenId}`;
+              // test
+
+              document.getElementById('aboutOverlay').style.display = 'block';
+          } else {
+              console.warn(`Button with ID ${button} not found.`);
+          }
+          
+        });
           console.log('An error occurred:', error);
       }
   }
@@ -863,5 +879,26 @@ const mint1 = async (tokenId) => {
     // else
     // Send transaction
 }
+
+// button related
+function applyStyles(button) {
+  // Find the button using its ID
+  // let button = document.getElementById(buttonId);
+
+  // If the button is found, apply the styles
+  if(button) {
+      button.style.border = '1px solid var(--c2)';
+      button.style.padding = '0.3em 0.8em 0.5em 0.8em';
+      button.style.fontFamily = 'var(--bookFontFamily)';
+      button.style.fontSize = 'var(--bookFontSize)';
+      button.style.marginBottom = '1em';
+      button.style.backgroundColor = 'var(--bg)';
+      button.style.marginLeft = '74%';
+      button.style.transition = 'border 250ms, background-color 250ms';
+  } else {
+      console.warn(`Button with ${button} not found.`);
+  }
+}
+
 export { mint };
 // window.mint = mint;
