@@ -854,7 +854,7 @@ const mintByReservation = async (tokenId, reservationId, choosePrice) => {
         }
         }); 
         } catch (error) {
-          console.log('operations with invitation storage failed...');
+          console.log('operations with invitation storage silently failed...');
         }
           // close mint overlay!
           document.getElementById('priceTierOverlayClose').click();
