@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 
 // Define constants or better yet, move to configuration
 const RPC_URL = process.env.RPC_URL;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const NFT_CONTRACT_ADDRESS = process.env.NFT_CONTRACT_ADDRESS;
 
 // Assuming you have your contractABI somewhere
 const contractABI = [
@@ -783,10 +783,11 @@ const contractABI = [
   }
 ]
 
+
 // This function fetches the token IDs
 const getReservationsStatus = async () => {
     const provider = new ethers.AlchemyProvider("sepolia", RPC_URL);
-    const nftContract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, provider);
+    const nftContract = new ethers.Contract(NFT_CONTRACT_ADDRESS, contractABI, provider);
     const reservationsStatus = await nftContract.getReservationsActive();
     return reservationsStatus;
 }

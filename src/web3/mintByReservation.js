@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import {getNextThreeInvitations, setInvitationInvitedBy, setInvitationUsed, getInvitationByInvitationValue} from '../db/invitations';
-
+import {getNextThreeInvitations, setInvitationInvitedByReservation} from '../db/invitations';
+import {setReservationUsed} from "../db/reservations";
 
 const connectWallet = async () => {
   try {
@@ -11,7 +11,7 @@ const connectWallet = async () => {
   }
 };
 await connectWallet();
-const mintByInvitation = async (tokenId, invitationId, choosePrice) => {
+const mintByReservation = async (tokenId, reservationId, choosePrice) => {
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contractAddress = process.env.NFT_CONTRACT_ADDRESS;
@@ -812,6 +812,7 @@ const mintByInvitation = async (tokenId, invitationId, choosePrice) => {
     }
 
     try {
+        // choosenPrice is not as amount in wei -> write it as message;
         const amountInEther = 1;  // Just an example. Replace with the amount you want to send.
         const amountInWei = ethers.parseEther(amountInEther.toString());
         // choosenPrice is not as amount in wei -> write it as message;
@@ -820,29 +821,7 @@ const mintByInvitation = async (tokenId, invitationId, choosePrice) => {
         if(amountInEther != choosenPriceWei){
  
         }
-        // loading
-        const button = document.getElementById(`#tiersSubmitButton`);
-        if(button){
-            button.className = 'buttonload';  // Change class
-            // Modify the button's content
-            button.innerHTML = '<i class="fa fa-circle-o-notch fa-spin"></i>Loading';
-            button.style.border = '1px solid var(--c2)';
-            button.style.padding = '0.3em 0.8em 0.5em 0.8em';
-            button.style.fontFamily = 'var(--bookFontFamily)';
-            button.style.fontSize = 'var(--bookFontSize)';
-            button.style.marginBottom = '1em';
-            button.style.backgroundColor = 'var(--bg)';
-            button.style.marginLeft = '74%';
-            button.style.transition = 'border 250ms, background-color 250ms';
-        }
-        // loading
-
-        // if we are here it means we can mint, so remove all those messages:
-
-        const mintingError = document.getElementById('tiersErrorMessage');
-        mintingError.innerHTML = ""
-
-        const transaction = await nftContract.mintByInvitation(tokenId, invitationId, choosenPriceWei, {
+        const transaction = await nftContract.mintByReservation(tokenId, reservationId, choosenPriceWei, {
             gasLimit: 12000000,
             value: choosenPriceWei
         });
@@ -865,11 +844,11 @@ const mintByInvitation = async (tokenId, invitationId, choosePrice) => {
           }
         });
         try {
-          await setInvitationUsed(invitationId, signer.address);
-          let initial = await getInvitationByInvitationValue(invitationId);
+          await setReservationUsed(reservationId, signer.address);
+          let initial = await getReservationByReservationValue(reservationId);
           const threeNewInvitations = await getNextThreeInvitations();
           threeNewInvitations.forEach(element => {
-          setInvitationInvitedBy(initial[0].id, element.value);
+          setInvitationInvitedByReservation(initial[0].id, element.value);
           for (let i = 1; i <= 3; i++) {
             let element = document.getElementById(`congratzInvitation${i}`);
             element.innerHTML = `https://ecsa-book.vercel.app/?invitationId=?${threeNewInvitations[i-1].value}`;
@@ -940,4 +919,4 @@ function applyStyles(button) {
       console.warn(`Button with ${button} not found.`);
   }
 }
-export {mintByInvitation}
+export {mintByReservation}

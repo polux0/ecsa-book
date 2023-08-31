@@ -1,7 +1,11 @@
 import { isInvitationValid } from "./db/invitations";
+import { isReservationValid } from "./db/reservations";
 import { areInvitationsActive } from './web3/areInvitationsActive.js';
 import { areReservationsActive } from './web3/areReservationsActive.js';
+import { isTokenReserved } from './web3/isTokenReserved.js';
+import { mintByReservation } from './web3/mintByReservation.js';
 import { mintByInvitation } from "./web3/mintByInvitation.js";
+import { mintById } from "./web3/mintById";
 
 async function submitSelection() {
 
@@ -10,60 +14,91 @@ async function submitSelection() {
     if(mintingError){
         mintingError.innerHTML = "";
     }
+    const params = new URLSearchParams(window.location.search);
+    const reservationId = params.get('reservationId') || "";
+    const invitationId = params.get('invitationId') || "";
+    const tokenId = localStorage.getItem('tokenId');
+    const errors = [];
+    const reservationsActive = await areReservationsActive();
+    const invitationsActive = await areInvitationsActive();
+    try {
+        // Retrieving the chosenPrice
+        const selectedTier = document.querySelector('#priceTiers input[type="radio"]:checked');
+        let chosenPrice;
+
+        if (selectedTier) {
+            console.log(`Selected Tier: ${selectedTier.value}`);
+            chosenPrice = selectedTier.value;
+            mintingError.style.display = "block";
+        } else {
+            console.log("No price tier selected!");
+            errors.push("Please select a price tier before proceeding.");
+            const mintingError = document.getElementById('tiersErrorMessage');
+            mintingError.innerHTML = "Please select a price tier before proceeding.";
+            mintingError.style.display = "block";
+            // technical debt - make mint button not clickable
+            return; // Exit the function early if no tier is selected.
+        }
     
-    // are invitations active?
-    let params = new URLSearchParams(window.location.search);
-
-    let invitationId = params.get('invitationId'); 
-    let reservationId = params.get('reservationId');
-    console.log('invitationId',  invitationId);
-    console.log('reservationId', reservationId)
-
-    if(invitationId){
-        const invitationsActive = areInvitationsActive();
-        if(invitationsActive){
-            let invitationValid = await isInvitationValid(invitationId);
-            console.log('invitationValid: ', invitationValid);
-            if(!invitationValid){
-                const tierErrorMessageButton = document.getElementById('tiersErrorMessage');
-                if(tierErrorMessageButton){
-                    tierErrorMessageButton.inner.html = "Invalid invitation"
-                    tierErrorMessageButton.style.display = "block";
-                    // disable click functionallity
-                    console.log('invitations invalid!');
+            if (reservationsActive) {
+                if (reservationId) {
+                    let validReservation = isReservationValid(reservationId, parseInt(tokenId, 10));
+                    if (validReservation) {
+                        console.log("It's a valid reservation, mint by reservation!");
+                        mintByReservation(parseInt(tokenId, 10), reservationId, chosenPrice);
+                        return;
+                    } else {
+                        console.log("Invalid reservation!");
+                        errors.push("Invalid reservation!");
+                    }
+                } else {
+                    console.log("Reservations are active but no reservationId is provided.");
+                    errors.push("Reservations are active but no reservationId is provided.");
                 }
             }
-        }
-    }
-    // are reservations active
-    if(reservationId){
-        const reservationsActive = areReservationsActive();
-        if(reservationsActive){
-            const reservationValid = await areReservationsActive(reservationId);
-            if(!reservationValid){
-                const tierErrorMessageButton = document.getElementById('tiersErrorMessage');
-                if(tierErrorMessageButton){
-                    tierErrorMessageButton.inner.html = "Invalid invitation"
-                    tierErrorMessageButton.style.display = "block";
-                    // technical debt
-                    // disable click functionallity
-                    console.log('reservations invalid!');
+    
+            if (invitationsActive) {
+                if (invitationId) {
+                    let validInvitation = await isInvitationValid(invitationId);
+                    console.log('valid invitation? ', validInvitation);
+                    if (validInvitation) {
+                        const tokenReserved = await isTokenReserved(tokenId);
+                        console.log(`is token reserved, ${tokenId}? `, tokenReserved);
+                        console.log(`is reservation active? `, reservationsActive);
+                        if (tokenReserved && reservationsActive) {
+                            console.log("Token is reserved. Invitation not enough!");
+                            errors.push("Token is reserved. Invitation not enough!");
+                        } else {
+                            mintByInvitation(parseInt(tokenId, 10), invitationId, chosenPrice);
+                            return;
+                        }
+                    } else {
+                        console.log("Invalid invitation!");
+                        errors.push("Invalid invitation!");
+                    }
+                } else if (!reservationId) { // If no reservationId was provided earlier
+                    console.log("Invitations are active, but no invitationId is provided.");
+                    errors.push("Invitations are active, but no invitationId is provided.");
                 }
-            
             }
-        }
-    }
-
-    // if both are good - > mint()
-    const selectedTier = document.querySelector('#priceTiers input[type="radio"]:checked');
-    if (!selectedTier) {
-        // technical debt
-        // disable click functionallity
-        console.log(`Selected Tier: ${selectedTier.value}`);
-    }
-    let tokenId = localStorage.getItem('tokenId');
-    mintByInvitation(parseInt(tokenId, 10), invitationId, selectedTier);
-
+    
+            if (!reservationsActive && !invitationsActive) {
+                console.log("Mint by ID!");
+                await mintById(tokenId, chosenPrice);
+                return;
+            }
+    
+            // If any errors have occurred and you're still in this function, display the last error message.
+            if (errors.length > 0) {
+                const mintingError = document.getElementById('tiersErrorMessage');
+                mintingError.innerHTML = errors[errors.length - 1];
+                mintingError.style.display = "block";
+            }
+    
+        } catch (error) {
+            // Handle any thrown errors here.
+            console.error("An error occurred:", error.message);
+        }   
 }
 
 window.submitSelection = submitSelection;

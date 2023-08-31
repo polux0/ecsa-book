@@ -3,7 +3,6 @@ import {initiateSupabase} from './supabase';
 const supabase = initiateSupabase();
 
 async function isInvitationValid(invitationValue) {
-    console.log('supabase client', supabase);
     try {
         const { data, error } = await supabase
             .from('invitations')
@@ -35,16 +34,28 @@ async function setInvitationUsed(invitationValue, usedByWallet) {
     }
 }
 
-async function setInvitationInvitedBy(initialInvitation, invitationToBeUpdated) {
+async function setInvitationInvitedBy(invitedByInvitationId, invitation) {
     try {
         const { error } = await supabase
             .from('invitations')
-            .update({ invited_by_invitation_id: initialInvitation })
-            .eq('value', invitationToBeUpdated);
+            .update({ invited_by_invitation_id: invitedByInvitationId })
+            .eq('value', invitation);
         
         if (error) throw error;
-
-        console.log('Invitation marked as used.');
+        console.log('Invitation marked as ivnited by.');
+    } catch (error) {
+        console.error("Error marking invitation as used:", error);
+    }
+}
+async function setInvitationInvitedByReservation(invitedByReservationId, invitation) {
+    try {
+        const { error } = await supabase
+            .from('invitations')
+            .update({ invited_by_reservation_id: invitedByReservationId })
+            .eq('value', invitation);
+        
+        if (error) throw error;
+        console.log('Invitation marked as ivnited by.');
     } catch (error) {
         console.error("Error marking invitation as used:", error);
     }
@@ -65,7 +76,6 @@ async function getNextThreeInvitations() {
     }
 }
 async function getInvitationByInvitationValue(invitationValue) {
-    console.log('supabase client', supabase);
     try {
         const { data, error } = await supabase
             .from('invitations')
@@ -74,7 +84,7 @@ async function getInvitationByInvitationValue(invitationValue) {
             .limit(1);
         
         if (error) throw error;
-        console.log('supabase data response: ', data);
+        console.log('getInvitationByInvitationValue data response: ', data);
 
         // If data is present and has a length greater than 0, return the first invitation. 
         // Otherwise, return null.
@@ -105,4 +115,4 @@ async function setInvitationsCreatedWithInvitationId(initialInvitationId, referr
 }
 
 
-export {isInvitationValid, getNextThreeInvitations, setInvitationUsed, getInvitationByInvitationValue, setInvitationsCreatedWithInvitationId, setInvitationInvitedBy}
+export {isInvitationValid, getNextThreeInvitations, setInvitationUsed, getInvitationByInvitationValue, setInvitationsCreatedWithInvitationId, setInvitationInvitedBy, setInvitationInvitedByReservation}

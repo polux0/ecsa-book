@@ -1,19 +1,54 @@
-async function isReservationValid(invitationValue) {
-    console.log('supabase client', supabase);
+import {initiateSupabase} from './supabase';
+
+const supabase = initiateSupabase();
+
+async function isReservationValid(reservationValue) {
     try {
         const { data, error } = await supabase
-            .from('invitations')
+            .from('reservations')
             .select('*')
-            .eq('value', invitationValue)
+            .eq('value', reservationValue)
             .eq('used_by_wallet', "0x")
             .limit(1);
         
         if (error) throw error;
-        console.log('supabase data response: ', data);
         return data && data.length > 0;
     } catch (error) {
         console.error("Error checking invitation validity:", error);
         return false;
     }
 }
-export {isReservationValid}
+async function setReservationUsed(reservationValue, usedByWallet) {
+    try {
+        const { error } = await supabase
+            .from('reservations')
+            .update({ used_by_wallet: usedByWallet })
+            .eq('value', reservationValue);
+        
+        if (error) throw error;
+        console.log('reservation marked as used.');
+    } catch (error) {
+        console.error("Error marking invitation as used:", error);
+    }
+}
+async function getReservationByReservationValue(reservationValue) {
+    try {
+        const { data, error } = await supabase
+            .from('reservations')
+            .select('*')
+            .eq('value', reservationValue)
+            .limit(1);
+        
+        if (error) throw error;
+        console.log('getReservationByReservationValue data response: ', data);
+
+        // If data is present and has a length greater than 0, return the first invitation. 
+        // Otherwise, return null.
+        return data;
+
+    } catch (error) {
+        console.error("Error checking invitation validity:", error);
+        return null;
+    }
+}
+export {isReservationValid, setReservationUsed, getReservationByReservationValue}
