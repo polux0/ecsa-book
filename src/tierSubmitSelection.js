@@ -1,5 +1,5 @@
 import { isInvitationValid } from "./db/invitations";
-import { isReservationValid } from "./db/reservations";
+import { isReservationValid, isReservationValidForTokenId } from "./db/reservations";
 import { areInvitationsActive } from './web3/areInvitationsActive.js';
 import { areReservationsActive } from './web3/areReservationsActive.js';
 import { isTokenReserved } from './web3/isTokenReserved.js';
@@ -42,7 +42,9 @@ async function submitSelection() {
     
             if (reservationsActive) {
                 if (reservationId) {
-                    let validReservation = isReservationValid(reservationId, parseInt(tokenId, 10));
+                    // is reservationValid should be changed to take into account ReservationContract as well
+                    let validReservation = await isReservationValidForTokenId(reservationId, parseInt(tokenId, 10));
+                    console.log('is valid reservation: ', validReservation);
                     if (validReservation) {
                         console.log("It's a valid reservation, mint by reservation!");
                         mintByReservation(parseInt(tokenId, 10), reservationId, chosenPrice);
@@ -52,8 +54,8 @@ async function submitSelection() {
                         errors.push("Invalid reservation!");
                     }
                 } else {
-                    console.log("Reservations are active but no reservationId is provided.");
-                    errors.push("Reservations are active but no reservationId is provided.");
+                    console.log("Reservations are active but no reservation is provided.");
+                    errors.push("Reservations are active but no reservation is provided.");
                 }
             }
     
@@ -77,8 +79,8 @@ async function submitSelection() {
                         errors.push("Invalid invitation!");
                     }
                 } else if (!reservationId) { // If no reservationId was provided earlier
-                    console.log("Invitations are active, but no invitationId is provided.");
-                    errors.push("Invitations are active, but no invitationId is provided.");
+                    console.log("Invitations are active, but no invitation is provided.");
+                    errors.push("Invitations are active, but no invitation is provided.");
                 }
             }
     
@@ -93,6 +95,7 @@ async function submitSelection() {
                 const mintingError = document.getElementById('tiersErrorMessage');
                 mintingError.innerHTML = errors[errors.length - 1];
                 mintingError.style.display = "block";
+                console.log('errors: ', errors)
             }
     
         } catch (error) {

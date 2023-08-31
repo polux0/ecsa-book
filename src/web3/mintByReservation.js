@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import {getNextThreeInvitations, setInvitationInvitedByReservation} from '../db/invitations';
-import {setReservationUsed} from "../db/reservations";
+import { getNextThreeInvitations, setInvitationInvitedByReservation } from '../db/invitations';
+import { setReservationUsed, getReservationByReservationValue } from "../db/reservations";
 
 const connectWallet = async () => {
   try {
@@ -10,8 +10,8 @@ const connectWallet = async () => {
     console.log("error: ", error);
   }
 };
-await connectWallet();
 const mintByReservation = async (tokenId, reservationId, choosePrice) => {
+    await connectWallet();
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contractAddress = process.env.NFT_CONTRACT_ADDRESS;
@@ -813,13 +813,16 @@ const mintByReservation = async (tokenId, reservationId, choosePrice) => {
 
     try {
         // choosenPrice is not as amount in wei -> write it as message;
-        const amountInEther = 1;  // Just an example. Replace with the amount you want to send.
-        const amountInWei = ethers.parseEther(amountInEther.toString());
-        // choosenPrice is not as amount in wei -> write it as message;
-        const choosenPriceWei = ethers.parseEther(price1.toString());
+        let choosenPriceWei = 0.0001;
         // technical debt - do this as timeout so it does not stay forever
-        if(amountInEther != choosenPriceWei){
- 
+        if(choosePrice != price1 || choosePrice != price2){
+          //error invalid priceSelected;  
+        }
+        if(choosePrice == price1){
+          choosenPriceWei = ethers.parseEther(price1.toString());
+        }
+        if(choosePrice == price2){
+          choosenPriceWei = ethers.parseEther(price2.toString());
         }
         const transaction = await nftContract.mintByReservation(tokenId, reservationId, choosenPriceWei, {
             gasLimit: 12000000,
@@ -827,10 +830,6 @@ const mintByReservation = async (tokenId, reservationId, choosePrice) => {
         });
         const receipt = await transaction.wait();
         if (receipt && receipt.status == 1) {
-          // move to modal
-          let threeInvitations = getNextThreeInvitations();
-          console.log('next three invitations: ', threeInvitations);
-
           // remove button that was initially used to mint: 
           // here function that will remove button copublish for this unit
           const buttons = document.querySelectorAll(`#publishUnit${tokenId}`);

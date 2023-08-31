@@ -1,17 +1,10 @@
 import { ethers } from 'ethers';
 import {getNextThreeInvitations, setInvitationInvitedBy, setInvitationUsed, getInvitationByInvitationValue} from '../db/invitations';
+import { connectWallet } from './connectWallet';
 
 
-const connectWallet = async () => {
-  try {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    localStorage.setItem("account", accounts[0]);
-  } catch (error) {
-    console.log("error: ", error);
-  }
-};
-await connectWallet();
 const mintById = async (tokenId, choosePrice) => {
+    await connectWallet();
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contractAddress = process.env.NFT_CONTRACT_ADDRESS;
@@ -813,7 +806,7 @@ const mintById = async (tokenId, choosePrice) => {
 
     try {
         // choosenPrice is not as amount in wei -> write it as message;
-        const choosenPriceWei = 0.001;
+        let choosenPriceWei = 0.001;
         // technical debt - do this as timeout so it does not stay forever
         if(choosePrice != price1 || choosePrice != price2){
           //error invalid priceSelected;  
@@ -824,7 +817,7 @@ const mintById = async (tokenId, choosePrice) => {
         if(choosePrice == price2){
           choosenPriceWei = ethers.parseEther(price2.toString());
         }
-
+        console.log('chosenPriceWei: ', choosenPriceWei);
         const transaction = await nftContract.mintById(tokenId, choosenPriceWei, {
             gasLimit: 12000000,
             value: choosenPriceWei

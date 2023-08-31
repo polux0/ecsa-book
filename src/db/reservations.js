@@ -18,6 +18,23 @@ async function isReservationValid(reservationValue) {
         return false;
     }
 }
+async function isReservationValidForTokenId(reservationValue, tokenId) {
+    try {
+        const { data, error } = await supabase
+            .from('reservations')
+            .select('*')
+            .eq('value', reservationValue)
+            .eq('token_id', tokenId)
+            .eq('used_by_wallet', "0x")
+            .limit(1);
+        
+        if (error) throw error;
+        return data && data.length > 0;
+    } catch (error) {
+        console.error("Error checking invitation validity:", error);
+        return false;
+    }
+}
 async function setReservationUsed(reservationValue, usedByWallet) {
     try {
         const { error } = await supabase
@@ -51,4 +68,4 @@ async function getReservationByReservationValue(reservationValue) {
         return null;
     }
 }
-export {isReservationValid, setReservationUsed, getReservationByReservationValue}
+export {isReservationValid, isReservationValidForTokenId, setReservationUsed, getReservationByReservationValue}

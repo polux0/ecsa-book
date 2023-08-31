@@ -812,13 +812,17 @@ const mintByInvitation = async (tokenId, invitationId, choosePrice) => {
     }
 
     try {
-        const amountInEther = 1;  // Just an example. Replace with the amount you want to send.
-        const amountInWei = ethers.parseEther(amountInEther.toString());
         // choosenPrice is not as amount in wei -> write it as message;
-        const choosenPriceWei = ethers.parseEther(price1.toString());
+        let choosenPriceWei = 0.001;
         // technical debt - do this as timeout so it does not stay forever
-        if(amountInEther != choosenPriceWei){
- 
+        if(choosePrice != price1 || choosePrice != price2){
+          //error invalid priceSelected;  
+        }
+        if(choosePrice == price1){
+          choosenPriceWei = ethers.parseEther(price1.toString());
+        }
+        if(choosePrice == price2){
+          choosenPriceWei = ethers.parseEther(price2.toString());
         }
         // loading
         const button = document.getElementById(`#tiersSubmitButton`);
