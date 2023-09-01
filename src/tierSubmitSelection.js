@@ -1,24 +1,47 @@
 import { isInvitationValid } from "./db/invitations";
-import { isReservationValid, isReservationValidForTokenId } from "./db/reservations";
+import { isReservationValidForTokenId } from "./db/reservations";
 import { areInvitationsActive } from './web3/areInvitationsActive.js';
 import { areReservationsActive } from './web3/areReservationsActive.js';
 import { isTokenReserved } from './web3/isTokenReserved.js';
 import { mintByReservation } from './web3/mintByReservation.js';
 import { mintByInvitation } from "./web3/mintByInvitation.js";
 import { mintById } from "./web3/mintById";
+// ux
+import {transactionInitiated} from "./web3/ux/transactionInitiated.js";
 
 async function submitSelection() {
 
     // clear all previous error messages
+    const tokenId = localStorage.getItem('tokenId');
     const mintingError = document.getElementById('tiersErrorMessage');
     if(mintingError){
         mintingError.innerHTML = "";
     }
+    const errors = [];
+    if (window.ethereum) {
+        console.log('Ethereum support is available')
+        if (window.ethereum.isMetaMask) {
+          console.log('MetaMask is active')
+        } else {
+            console.log('MetaMask is not available')
+            if(mintingError){
+                mintingError.innerHTML = "Metamask is not available, please install it";
+            }
+            console.log('MetaMask is not available')
+        }
+      } else {
+        errors.push('Metamask is not available, please install it');
+        console.log('Ethereum support is not found')
+        if(mintingError){
+            mintingError.innerHTML = "Metamask is not available, please install it. https://metamask.io/download/";
+            mintingError.style.display = "block";
+        }
+        return;
+      }
+      
     const params = new URLSearchParams(window.location.search);
     const reservationId = params.get('reservationId') || "";
     const invitationId = params.get('invitationId') || "";
-    const tokenId = localStorage.getItem('tokenId');
-    const errors = [];
     const reservationsActive = await areReservationsActive();
     const invitationsActive = await areInvitationsActive();
     try {
@@ -103,6 +126,21 @@ async function submitSelection() {
             console.error("An error occurred:", error.message);
         }   
 }
+function replaceButtonWithDiv(id) {
+    // Locate the button
+    var button = document.getElementById(id);
+
+    // Replace the button with new content
+    if (button) {
+        button.outerHTML = `
+            <div class="publishing merge">
+                <div class="dot-carousel"></div>
+                <div class="publishing">Publishing</div>
+            </div>
+        `;
+    }
+}
+
 
 window.submitSelection = submitSelection;
 export {submitSelection}

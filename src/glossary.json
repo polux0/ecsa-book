@@ -3,12 +3,12 @@
     {
       "term": "accounting",
       "definition": "Accounting is not only historically the first form of writing, a method for expressing, organizing, managing and archiving information. It is also maybe our earliest distributed economic communication and networking protocol. As a collaborative record-keeping and calculation system based on simple arithmetic, it is used to organize and record our transactions in a ledger or a book of accounts. Through accounting, every transaction is recorded in at least two ledgers. To reflect what I transfer to you, you make a positive entry in your ledger: a credit; I make a negative one of a matching amount in mine: a debit. To record the transfer going the other way around, I make a positive entry in my ledger, and you make a negative one in yours. We distribute our transaction record across two mutually referring ledgers. Together, through this practice, we create a fundamentally networked, non-hierarchical, and distributed record-keeping system: A distributed ledger. The key insight of accounting ECSA has followed is that we are able to cooperate, coordinate and form relationships by just sharing a practice and rules about it - with no need for a global shared ledger. Accounting practices contain rules and procedures that determine how to classify and record information, how to change it, verify it, and compile and communicate it. Through the accounting practice we agree to connect not only instantaneously but across time through accounting notions like assets and liabilities. A liability entry in my ledger is an asset entry in yours. Your present right is my promise and future obligation. The matching credits and debits that we record indicate the transfer of anything and how much of it: They describe a value flow between us. Every transaction we make records our operations and necessarily connects our ledgers. The accounting information binds together a network and coordinates our activities and those we transact with: it is a record-keeping and calculation system, but more importantly, a communication and organization system. As a record-keeping, communication and calculation agreement between two or more parties, accounting is in effect a network computation agreement. This is the definition of a network protocol. As a protocol, it does not dictate what we enter into the ledger, only how we must enter it; it does not determine the amounts we record, only that we record amounts. As a protocol accounting serves the function of storage, retrieval, and verification of the integrity of information. But why do we use it? We record in the ledger our tacit response to an essential economic question: “what is valuable?” The transactions on the ledgers that document our exchange reflect a practical agreement on what we value of each other. The amounts we record using accounting respond to another question: “How valuable is it?” The ledger entries embed a transaction as a measurement: an exchange rate that reflects the “value” we give to one thing in terms of another. In other words, accounting is a value communication network. The accounting practice, whether recording on clay, tablet, or paper, binds together a network of bookkeepers and their ledgers. As such, historically, it formed a rudimentary distributed computational medium. Now, when computational networks are our new medium that host the record-keeping and the calculation - historically undertaken by slower mediums - the updates on our ledgers, our transactions, are rendered incredibly fast and incredibly vast. ECSA is building directly on this insight. See Jorge Lopez (2022): Economy as a reprogrammable communication medium.",
-      "available": true
+      "available": false
     },
     {
       "term": "agency",
       "definition": "(1) Agency means the capability to operate and navigate a space-time. (2) An agency is a network of agents appearing and acting together as a coherent whole without any central decision making. A contractual relationship of many to many via a network derivative. Also known as the collective agent, composite agent, synthetic agent, derivative agent, distributed agent, derivative community. Agencies may be public or private, uniquely identifiable and able to participate in other economic spaces as a coherent whole. Through such composite agent we enable the creation of large scale collaborative organizational networks. Agency is a view on the network: when viewing agents in these networks, organized around and participating in a specific performance, we refer to them as agencies. Agency is a new understanding of an issuance around a performance: though there is no one central issuer but instead a whole network of (distributed) issuers and issuances, it expresses that it is the whole group - the coming together of separate agents - that is actually creating the value that is tokenized and getting captured by the performance.",
-      "available": true
+      "available": false
     },
     {
       "term": "agent",
@@ -53,7 +53,7 @@
     {
       "term": "chartalist money",
       "definition": "Chartalist money is state backed money. The term comes from the Latin word \"charta\", meaning a ticket or a token that may be accepted as payment, but which do not have intrinsic value. The Chartalist theory of money defines money as a creation of the government and as having value in exchange because sovereign power requires taxes to be paid on the money they issue. Furthermore, Chartalists understand money originating historically with states’ attempts to direct economic activity rather than as a spontaneous solution to “coincidence of wants” or as a means with which to tokenize debt. Paved way for Modern Monetary Theory (MMT).",
-      "available": true
+      "available": false
     },
     {
       "term": "circuit of value",
@@ -63,7 +63,7 @@
     {
       "term": "clearing",
       "definition": "Clearing is technically netting with a temporal component. In banking we see it as bilateral reduction of balance sheet leverage done at certain intervals. It is a necessary element in any credit system. Centralized clearing divides agents in the network in two classes: those that can issue/clear money, and those that cannot. In the economic space protocol, clearing is a network process where every agent participates and collectively assumes the role commonly taken by a specialized third party like a clearing house. Every economic space agent also becomes clearer i.e. like a little banker who is part of a credit issuing and clearing network which is run just by participating in a joint protocol. Economic space agents learn to do clearing through the creation of liquidity tokens: when you issue a liquidity token, you issue it to the credit network. Every liquidity token becomes thus part of the credit network. That is how it is possible for them to clear. Liquidity tokens are used to facilitate and confirm ledger entries, generating stability in economic flows; they are not coins to accumulate or loaned for profit.",
-      "available": true
+      "available": false
     },
     {
       "term": "coin - token",
@@ -93,7 +93,7 @@
     {
       "term": "commons",
       "definition": "Resources that have shared ownership and are built and curated in a distributed way. Particularly in a digital era performances and outputs are becoming commons compatible. Non-divisibility of outputs and (close to) zero marginal costs of production, as found in software and other digital goods, are all conditions for a commons. Commons attributes are everywhere: inside agents, between agents, and across and between networks. A propensity towards participatory common ownership is integral to a postcapitalist vision.",
-      "available": true
+      "available": false
     },
     {
       "term": "computational medium",

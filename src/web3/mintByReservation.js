@@ -1,17 +1,22 @@
 import { ethers } from 'ethers';
 import { getNextThreeInvitations, setInvitationInvitedByReservation } from '../db/invitations';
 import { setReservationUsed, getReservationByReservationValue } from "../db/reservations";
+import { connectWallet } from './connectWallet';
+import {transactionInitiated} from './ux/transactionInitiated.js';
 
-const connectWallet = async () => {
-  try {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    localStorage.setItem("account", accounts[0]);
-  } catch (error) {
-    console.log("error: ", error);
-  }
-};
+
 const mintByReservation = async (tokenId, reservationId, choosePrice) => {
     await connectWallet();
+    if (window.ethereum) {
+      console.log('Ethereum support is available')
+      if (window.ethereum.isMetaMask) {
+        console.log('MetaMask is active')
+      } else {
+        console.log('MetaMask is not available')
+      }
+    } else {
+      console.log('Ethereum support is not found')
+    }
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contractAddress = process.env.NFT_CONTRACT_ADDRESS;
@@ -797,20 +802,6 @@ const mintByReservation = async (tokenId, reservationId, choosePrice) => {
     let price1 = 0.0001;
     let price2 = 0.0002;
 
-    const expectedNetworkId = '0xaa36a7';
-    const expectedNetworkIdNumber = 11155111n;
-    const currentNetworkId = await provider.getNetwork().then(net => net.chainId);
-  
-    console.log("currentNetworkId: ", currentNetworkId);
-    if (currentNetworkId !== expectedNetworkIdNumber) {
-        try {
-            await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: expectedNetworkId }] });
-        } catch (switchError) {
-            console.error('Chain switch failed:', switchError);
-            return;
-        }
-    }
-
     try {
         // choosenPrice is not as amount in wei -> write it as message;
         let choosenPriceWei = 0.0001;
@@ -824,10 +815,21 @@ const mintByReservation = async (tokenId, reservationId, choosePrice) => {
         if(choosePrice == price2){
           choosenPriceWei = ethers.parseEther(price2.toString());
         }
+        if (currentNetworkId !== expectedNetworkIdNumber) {
+          try {
+             const changed = await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: expectedNetworkId }] });
+             console.log('network is changed:', changed);
+             window.location.reload();
+          } catch (switchError) {
+              console.error('Chain switch failed:', switchError);
+              return;
+          }
+        }
         const transaction = await nftContract.mintByReservation(tokenId, reservationId, choosenPriceWei, {
             gasLimit: 12000000,
             value: choosenPriceWei
         });
+        transactionInitiated(tokenId);
         const receipt = await transaction.wait();
         if (receipt && receipt.status == 1) {
           // remove button that was initially used to mint: 
@@ -836,7 +838,6 @@ const mintByReservation = async (tokenId, reservationId, choosePrice) => {
           buttons.forEach(function(button) {
             // Apply changes to each element
             if(button) {
-              // test
               button.remove();
           } else {
               console.warn(`Button with ID ${button} not found.`);
@@ -895,27 +896,5 @@ const mintByReservation = async (tokenId, reservationId, choosePrice) => {
             console.log('An error occurred:', error);
         }
     }
-}
-
-
-// isolate
-
-function applyStyles(button) {
-  // Find the button using its ID
-  // let button = document.getElementById(buttonId);
-
-  // If the button is found, apply the styles
-  if(button) {
-      button.style.border = '1px solid var(--c2)';
-      button.style.padding = '0.3em 0.8em 0.5em 0.8em';
-      button.style.fontFamily = 'var(--bookFontFamily)';
-      button.style.fontSize = 'var(--bookFontSize)';
-      button.style.marginBottom = '1em';
-      button.style.backgroundColor = 'var(--bg)';
-      button.style.marginLeft = '74%';
-      button.style.transition = 'border 250ms, background-color 250ms';
-  } else {
-      console.warn(`Button with ${button} not found.`);
-  }
 }
 export {mintByReservation}

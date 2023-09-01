@@ -861,4 +861,91 @@
     padding: 12px 16px; /* Some padding */
     font-size: 16px /* Set a font size */
   }
+/* Hide the default radio */
+.custom-radio {
+    display: none;
+}
 
+/* Style the label to position the custom radio and text */
+label {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+/* Create a new custom radio circle */
+.custom-radio + span:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    border-radius: 50%;
+    background-color: transparent;
+}
+
+/* Create the radio circle when checked */
+.custom-radio:checked + span:before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #333;
+}
+
+/* attempt of animation with three dots */
+
+.dot-carousel {
+    position: relative;
+    left: -9999px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #ffffff;
+    box-shadow: 9984px 0 0 0 #ffffff, 9999px 0 0 0 #ffffff, 10014px 0 0 0 #ffffff;
+    animation: dot-carousel 1.5s infinite linear;
+  }
+  
+  @keyframes dot-carousel {
+    0% {
+      box-shadow: 9984px 0 0 -1px #ffffff, 9999px 0 0 1px #ffffff, 10014px 0 0 -1px #ffffff;
+    }
+    50% {
+      box-shadow: 10014px 0 0 -1px #ffffff, 9984px 0 0 -1px #ffffff, 9999px 0 0 1px #ffffff;
+    }
+    100% {
+      box-shadow: 9999px 0 0 1px #ffffff, 10014px 0 0 -1px #ffffff, 9984px 0 0 -1px #ffffff;
+    }
+  }
+
+  .dot-carousel,
+  .publishing {
+      display: inline-block;
+      vertical-align: middle;
+  }
+  .publishing{
+    margin-left:1.3rem;
+  }
+  .buttonload:hover{
+    background-color:white;
+    color:black;
+  }
+
+  .minting-container:hover {
+    background-color: white;
+    color: black;
+}
+
+/* This is to ensure the FontAwesome icon also changes color on hover */
+.minting-container:hover .fa {
+    color: black;
+}

@@ -409,6 +409,7 @@ let mainUrl = '#';
 // Start the unit ID at 602 for glossary items
 let unitID = 602;
 
+const mintedTokens = await getMintedTokens();
 // Load the JSON file
 fetch('glossary.json')
   .then(response => response.json())
@@ -421,11 +422,6 @@ fetch('glossary.json')
 
     // Get the parent element where the terms should be added
     const glossaryContainer = document.getElementById('bookGlossary');
-
-    // Here not to flood alchemy provider
-
-    const mintedTokens = await getMintedTokens();
-    console.log('minted tokens: ', mintedTokens);
 
     glossary.forEach(item => {
       const termContainer = document.createElement('details');

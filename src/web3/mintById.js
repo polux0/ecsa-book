@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import {getNextThreeInvitations, setInvitationInvitedBy, setInvitationUsed, getInvitationByInvitationValue} from '../db/invitations';
 import { connectWallet } from './connectWallet';
+import {transactionInitiated} from './ux/transactionInitiated.js';
 
 
 const mintById = async (tokenId, choosePrice) => {
@@ -785,25 +786,29 @@ const mintById = async (tokenId, choosePrice) => {
           "type": "function"
         }
       ];
+
     const nftContract = new ethers.Contract(contractAddress, contractABI, signer);
 
     let price1 = 0.0001;
     let price2 = 0.0002;
 
+    const mintingError = document.getElementById('tiersErrorMessage');
+    mintingError.innerHTML = ""
+
     const expectedNetworkId = '0xaa36a7';
     const expectedNetworkIdNumber = 11155111n;
     const currentNetworkId = await provider.getNetwork().then(net => net.chainId);
-  
-    console.log("currentNetworkId: ", currentNetworkId);
+
     if (currentNetworkId !== expectedNetworkIdNumber) {
         try {
-            await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: expectedNetworkId }] });
+           const changed = await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: expectedNetworkId }] });
+           console.log('network is changed:', changed);
+           window.location.reload();
         } catch (switchError) {
             console.error('Chain switch failed:', switchError);
             return;
         }
     }
-
     try {
         // choosenPrice is not as amount in wei -> write it as message;
         let choosenPriceWei = 0.001;
@@ -817,17 +822,30 @@ const mintById = async (tokenId, choosePrice) => {
         if(choosePrice == price2){
           choosenPriceWei = ethers.parseEther(price2.toString());
         }
-        console.log('chosenPriceWei: ', choosenPriceWei);
+        const mintingError = document.getElementById('tiersErrorMessage');
+        mintingError.innerHTML = ""
+
+        const expectedNetworkId = '0xaa36a7';
+        const expectedNetworkIdNumber = 11155111n;
+        const currentNetworkId = await provider.getNetwork().then(net => net.chainId);
+
+        if (currentNetworkId !== expectedNetworkIdNumber) {
+            try {
+               const changed = await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: expectedNetworkId }] });
+               console.log('network is changed:', changed);
+               window.location.reload();
+            } catch (switchError) {
+                console.error('Chain switch failed:', switchError);
+                return;
+            }
+        }
         const transaction = await nftContract.mintById(tokenId, choosenPriceWei, {
             gasLimit: 12000000,
             value: choosenPriceWei
         });
+        transactionInitiated(tokenId);
         const receipt = await transaction.wait();
         if (receipt && receipt.status == 1) {
-          // move to modal
-          let threeInvitations = getNextThreeInvitations();
-          console.log('next three invitations: ', threeInvitations);
-
           // remove button that was initially used to mint: 
           // here function that will remove button copublish for this unit
           const buttons = document.querySelectorAll(`#publishUnit${tokenId}`);
@@ -841,16 +859,17 @@ const mintById = async (tokenId, choosePrice) => {
           }
         });
         try {
-          await setInvitationUsed(invitationId, signer.address);
-          let initial = await getInvitationByInvitationValue(invitationId);
+          // await setInvitationUsed(invitationId, signer.address);
+          // let initial = await getInvitationByInvitationValue(invitationId);
           const threeNewInvitations = await getNextThreeInvitations();
-          threeNewInvitations.forEach(element => {
-          setInvitationInvitedBy(initial[0].id, element.value);
+          console.log('three new invitations: ', threeNewInvitations)
+          // threeNewInvitations.forEach(element => {
+          // setInvitationInvitedBy(initial[0].id, element.value);
           for (let i = 1; i <= 3; i++) {
             let element = document.getElementById(`congratzInvitation${i}`);
             element.innerHTML = `https://ecsa-book.vercel.app/?invitationId=?${threeNewInvitations[i-1].value}`;
         }
-        }); 
+        // }); 
         } catch (error) {
           console.log('operations with invitation storage failed...');
         }

@@ -50,14 +50,14 @@
             <!-- Price Tiers Selection -->
             <form id="priceTiers" style="margin-top:2rem">
                 <label>
-                    <input type="radio" name="tier" value="0.0001">
-                    Tier 1 - $10
+                    <input type="radio" name="tier" value="0.0001" class="custom-radio">
+                    <span></span> Tier 1 - $10
                 </label>
                 <br>
                 <br>
                 <label>
-                    <input type="radio" name="tier" value="0.0002">
-                    Tier 2 - $20
+                    <input type="radio" name="tier" value="0.0002" class="custom-radio">
+                    <span></span> Tier 2 - $20
                 </label>
             </form>
             <br>
@@ -66,7 +66,9 @@
             </li>
         </div>
         <div style="text-align:center;margin-top:70px">
-            <button id="tiersSubmitButton" onclick="submitSelection()">Mint</button>
+            <button id="tiersSubmitButton" onclick="submitSelection()">
+                Mint
+            </button>
         </div>
     </div>
     <div id="congratzOverlay" style="display:none">
@@ -7193,7 +7195,7 @@
             depicting a viable, evolving, distributed postcapitalism, where participants design their own futures, both
             individually and collectively.</p>
     </div>
-    <div id="u602" class="unit available">
+    <div id="u601" class="unit available">
         <p>So we now invite feedback, debate and expressions of interest from diverse sources, but especially from
             people and their organizations who can see in this proposal new ways of addressing social problems they have
             always known, or who now sense a potential for change they could not previously have imagined possible.</p>
@@ -7236,7 +7238,6 @@
         orbsAs[o] = document.createElement('a');
         orbsAs[o].id = "orb_" + o; 
         orbsAs[o].classList.add('orbMapA');
-        // we need to modify things here as we have to preserve invitation or reservation url
         orbsAs[o].href = `#u${o}`;
         orbsImgs[o] = document.createElement('img');
         orbsImgs[o].classList.add('orbMapImg');
@@ -7250,5 +7251,5 @@
     }
 </script>
 <script src="./bundle.js"></script>
-<script src="./tierSubmitSelection.js"></script>
+<!-- <script type="application/module" src="./tierSubmitSelection.js"></script> -->
 <!-- <script src="./tierSubmitSelectionClean.js"></script> -->

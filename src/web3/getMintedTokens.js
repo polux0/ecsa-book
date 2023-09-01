@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 
 // Define constants or better yet, move to configuration
 const RPC_URL = process.env.RPC_URL;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = process.env.NFT_CONTRACT_ADDRESS;
 
 // Assuming you have your contractABI somewhere
 const contractABI = [
